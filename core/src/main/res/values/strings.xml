@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="star_wars">Star Wars</string>
+    <string name="app_name">StarWars Search</string>
+    <string name="weight">Weight</string>
+    <string name="height">Height</string>
+</resources>
