@@ -212,6 +212,7 @@ fun DependencyHandler.core() {
     add("implementation", Dependencies.AndroidX.kotlinStdlib)
     add("implementation", Dependencies.UILibs.materialDesign)
     add("implementation", project(":domain"))
+    dagger()
     navigationComponent()
     unitTestDeps()
     androidX()

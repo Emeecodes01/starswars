@@ -20,7 +20,7 @@ class VerticalListItemDecorator(private val spacing: Int) : RecyclerView.ItemDec
         }
 
         val position = parent.getChildAdapterPosition(view)
-        if (position == 1) {
+        if (position == 0) {
             with(outRect) {
                 top = spacing
             }

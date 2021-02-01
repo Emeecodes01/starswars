@@ -10,6 +10,7 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/character_card"
         android:layout_width="match_parent"
         android:layout_height="150dp"
         app:strokeWidth="2dp"
@@ -29,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 tools:text="Beru Whitesun lars"
-                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:textAppearance="?attr/textAppearanceHeadline5"
                 app:layout_constraintEnd_toStartOf="@+id/guideline"
                 app:layout_constraintStart_toStartOf="@+id/guideline2"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -39,18 +40,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_begin="395dp" />
+                app:layout_constraintGuide_end="@dimen/compact_padding" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_begin="20dp" />
+                app:layout_constraintGuide_begin="@dimen/compact_padding" />
 
             <TextView
                 android:id="@+id/height_tv"
-                android:text="@{character.height}"
+                android:text="@{character.height + ` CM`}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -62,7 +63,7 @@
 
             <TextView
                 android:id="@+id/weight_tv"
-                android:text="@{character.mass}"
+                android:text="@{character.mass + ` KG`}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -89,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/height"
-                android:textAppearance="?attr/textAppearanceHeadline5"
+                android:textAppearance="?attr/textAppearanceHeadline6"
                 app:layout_constraintEnd_toEndOf="@+id/height_tv"
                 app:layout_constraintStart_toStartOf="@+id/height_tv"
                 app:layout_constraintTop_toBottomOf="@+id/height_tv" />
@@ -100,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/weight"
-                android:textAppearance="?attr/textAppearanceHeadline5"
+                android:textAppearance="?attr/textAppearanceHeadline6"
                 app:layout_constraintEnd_toEndOf="@+id/weight_tv"
                 app:layout_constraintStart_toStartOf="@+id/weight_tv"
                 app:layout_constraintTop_toBottomOf="@+id/weight_tv" />

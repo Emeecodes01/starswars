@@ -7,6 +7,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.core.base.BaseFragment
 import com.example.core.states.StarWarResource
+import com.example.core.utils.extensions.gone
+import com.example.core.utils.extensions.visible
 import com.example.core.utils.itemdecorators.VerticalListItemDecorator
 import com.example.starwarssearch.R
 import com.example.starwarssearch.databinding.FragmentSearchBinding
@@ -14,6 +16,7 @@ import com.example.starwarssearch.ui.adapters.CharactersAdapter
 import com.example.starwarssearch.viewmodel.SearchFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import jp.wasabeef.recyclerview.animators.SlideInDownAnimator
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
@@ -33,7 +36,6 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
         get() = R.layout.fragment_search
 
 
-
     override fun observeViewModel() {
         with(searchFragmentViewModel.characters) {
             uiStateJob = lifecycleScope.launchWhenStarted {
@@ -42,16 +44,40 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
                         is StarWarResource.Success -> {
                             it.data?.let { characters ->
                                 charactersAdapter.submitList(characters)
+                                successState()
                             }
                         }
                         is StarWarResource.Loading -> {
-
+                            loadingState()
                         }
-                        is StarWarResource.Error -> TODO()
+
+                        is StarWarResource.Error -> {
+                            errorState()
+                            showError(it.message)
+                        }
                     }
                 }
             }
         }
+    }
+
+
+    private fun successState() {
+        binding.errorFrame.gone()
+        binding.loadingFrame.gone()
+        binding.charactersRv.visible()
+    }
+
+    private fun errorState() {
+        binding.errorFrame.visible()
+        binding.charactersRv.gone()
+        binding.loadingFrame.gone()
+    }
+
+    private fun loadingState() {
+        binding.charactersRv.gone()
+        binding.errorFrame.gone()
+        binding.loadingFrame.visible()
     }
 
 
@@ -63,7 +89,7 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
 
     private fun initViews() {
         with(binding.charactersRv) {
-            itemAnimator = SlideInDownAnimator().apply {
+            itemAnimator = SlideInUpAnimator().apply {
                 addDuration = 300
                 removeDuration = 300
             }
@@ -85,11 +111,14 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
             .catch {  err ->
                 showError(err.message)
             }
+            .launchIn(lifecycleScope)
     }
 
 
     private fun showError(message: String?) {
-
+        message?.let {
+            binding.errorTv.text = it
+        }
     }
 
     override fun onStop() {
