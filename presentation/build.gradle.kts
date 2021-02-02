@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id ("com.android.application")
     kotlin("android")
+    kotlin("android.extensions")
     kotlin("kapt")
     id("androidx.navigation.safeargs")
     id("dagger.hilt.android.plugin")
@@ -22,7 +23,6 @@ android {
         targetSdkVersion(Config.Versions.targetSdk)
         versionCode = Config.Versions.versionCode
         versionName = Config.Versions.versionName
-
         testInstrumentationRunner = Config.Android.testRunner
     }
 

@@ -4,4 +4,6 @@
     <string name="app_name">StarWars Search</string>
     <string name="weight">Weight</string>
     <string name="height">Height</string>
+    <string name="species">Species</string>
+    <string name="films">Films</string>
 </resources>

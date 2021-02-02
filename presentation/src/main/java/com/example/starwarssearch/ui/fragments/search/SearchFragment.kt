@@ -1,4 +1,4 @@
-package com.example.starwarssearch.ui.fragments
+package com.example.starwarssearch.ui.fragments.search
 
 import android.os.Bundle
 import android.view.View
@@ -7,28 +7,30 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.core.base.BaseFragment
 import com.example.core.states.StarWarResource
+import com.example.core.utils.SingleArg
 import com.example.core.utils.extensions.gone
 import com.example.core.utils.extensions.visible
 import com.example.core.utils.itemdecorators.VerticalListItemDecorator
 import com.example.starwarssearch.R
 import com.example.starwarssearch.databinding.FragmentSearchBinding
+import com.example.starwarssearch.models.CharacterModel
 import com.example.starwarssearch.ui.adapters.CharactersAdapter
-import com.example.starwarssearch.viewmodel.SearchFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import jp.wasabeef.recyclerview.animators.SlideInDownAnimator
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import reactivecircus.flowbinding.appcompat.queryTextChanges
 
 
 @AndroidEntryPoint
-class SearchFragment: BaseFragment<FragmentSearchBinding>() {
+class SearchFragment: BaseFragment<FragmentSearchBinding>(), SingleArg<CharacterModel>{
+
+    companion object {
+        const val DEBOUNCE_TIME = 400L
+    }
 
     private val searchFragmentViewModel: SearchFragmentViewModel by viewModels()
-    private val charactersAdapter: CharactersAdapter by lazy { CharactersAdapter() }
+    private val charactersAdapter: CharactersAdapter by lazy { CharactersAdapter(this) }
 
     private var uiStateJob: Job? = null
 
@@ -103,7 +105,7 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
 
     private fun initSearchView() {
         binding.characterSearch.queryTextChanges()
-            .debounce(400)
+            .debounce(DEBOUNCE_TIME)
             .filter { it.isNotEmpty() }
             .mapLatest {
                 searchFragmentViewModel.searchCharacter(it.toString())
@@ -124,6 +126,11 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
     override fun onStop() {
         uiStateJob?.cancel()
         super.onStop()
+    }
+
+    override fun invoke(p1: CharacterModel) {
+        val direction = SearchFragmentDirections.actionSearchFragmentToDetailFragment(p1)
+        navigateTo(direction)
     }
 
 }

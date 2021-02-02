@@ -1,5 +1,10 @@
 package com.example.starwarssearch.models
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+
+@Parcelize
 data class CharacterModel(
     val birth_year: String,
     val created: String,
@@ -17,4 +22,4 @@ data class CharacterModel(
     val starships: List<String>,
     val url: String,
     val vehicles: List<String>
-)
+): Parcelable

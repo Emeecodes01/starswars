@@ -1,7 +1,7 @@
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.kotlin.dsl.project
 
-const val kotlinVersion = "1.4.0"
+const val kotlinVersion = "1.4.21"
 const val gradle = "4.1.2"
 
 object Config {

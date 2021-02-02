@@ -7,7 +7,7 @@ import com.example.domain.thread.ExecutionThread
 import com.example.domain.utils.RemoteRepository
 import javax.inject.Inject
 
-class SearchStarWarsCharacterUseCase @Inject constructor(
+class SearchStarWarsCharacterUseCase @Inject constructor (
     executionThread: ExecutionThread,
     @RemoteRepository private val remote: StarWarsDataRepository
 ): SuspendUseCase<String, List<Character>>(executionThread) {

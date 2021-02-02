@@ -1,4 +1,4 @@
-package com.example.starwarssearch.viewmodel
+package com.example.starwarssearch.ui.fragments.search
 
 
 import androidx.lifecycle.ViewModel
