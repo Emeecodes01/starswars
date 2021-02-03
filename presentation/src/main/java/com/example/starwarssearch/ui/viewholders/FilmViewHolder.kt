@@ -19,6 +19,7 @@ class FilmViewHolder(private val binding: LayoutFilmsViewBinding) :
 
     override fun errorState(message: String?) {
         with(binding) {
+            errorTv.text = message
             progress.gone()
             errorTv.visible()
             filmsRv.invisible()

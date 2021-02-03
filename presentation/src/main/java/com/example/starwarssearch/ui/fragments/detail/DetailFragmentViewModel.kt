@@ -11,15 +11,13 @@ import com.example.starwarssearch.models.CharacterModel
 import com.example.starwarssearch.models.FilmModel
 import com.example.starwarssearch.models.SpeciesModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.async
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DetailFragmentViewModel @Inject constructor(
+class DetailFragmentViewModel @Inject constructor (
     private val getSpeciesUseCase: GetSpeciesUseCase,
     private val getFilmsUseCase: GetFilmsUseCase,
     private val speciesModelMapper: SpeciesModelMapper,
@@ -38,15 +36,6 @@ class DetailFragmentViewModel @Inject constructor(
         throwable.printStackTrace()
     }
 
-    private val speciesExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        throwable.printStackTrace()
-        _species.value = StarWarResource.Error(throwable.message)
-    }
-
-    private val filmExceptionHandler = CoroutineExceptionHandler {_, throwable ->
-        throwable.printStackTrace()
-        _species.value = StarWarResource.Error(throwable.message)
-    }
 
 
     private suspend fun getSpecies(speciesUrl: List<String>): List<SpeciesModel> {
@@ -70,14 +59,29 @@ class DetailFragmentViewModel @Inject constructor(
     fun getAllCharacterDetails(character: CharacterModel) {
         _species.value = StarWarResource.Loading()
         viewModelScope.launch(detailsErrorHandler) {
-            val speciesDeffered = async (speciesExceptionHandler) { getSpecies(character.species) }
-            val filmsDeffered = async (filmExceptionHandler) { getFilms(character.films) }
 
-            val speciesResult = speciesDeffered.await()
-            _species.value = StarWarResource.Success(speciesResult)
+            supervisorScope {
+                val speciesDeferred = async { getSpecies(character.species) }
+                val filmsDeferred = async { getFilms(character.films) }
 
-            val filmsResult = filmsDeffered.await()
-            _films.value = StarWarResource.Success(filmsResult)
+                runCatching { speciesDeferred.await() }
+                    .onSuccess {
+                        _species.value = StarWarResource.Success(it)
+                    }
+                    .onFailure {
+                        _species.value = StarWarResource.Error(it.message)
+                    }
+
+
+                runCatching { filmsDeferred.await() }
+                    .onSuccess {
+                        _films.value = StarWarResource.Success(it)
+                    }
+                    .onFailure {
+                        _films.value = StarWarResource.Error(it.message)
+                    }
+            }
+
         }
     }
 

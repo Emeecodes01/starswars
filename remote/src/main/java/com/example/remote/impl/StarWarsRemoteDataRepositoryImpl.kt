@@ -30,6 +30,7 @@ class StarWarsRemoteDataRepositoryImpl @Inject constructor (
         throw IllegalModuleAccessException()
     }
 
+
     override suspend fun getSpecies(speciesUrl: List<String>): List<Species> {
         return speciesUrl.toFlow()
             .map { service.fetchSpecies(it) }
@@ -43,6 +44,7 @@ class StarWarsRemoteDataRepositoryImpl @Inject constructor (
             .map { service.fetchFilms(it) }
             .toList()
             .map { filmRemoteModelMapper.mapFrom(it) }
+
     }
 
     override suspend fun getHomeLand(homeLand: String): HomeLand {

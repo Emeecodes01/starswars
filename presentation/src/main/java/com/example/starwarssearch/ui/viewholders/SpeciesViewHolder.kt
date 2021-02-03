@@ -19,6 +19,7 @@ class SpeciesViewHolder(val binding: LayoutSpeciesViewBinding) :
 
     override fun errorState(message: String?) {
         with(binding) {
+            errorTv.text = message
             progress.gone()
             errorTv.visible()
             speciesRv.invisible()
