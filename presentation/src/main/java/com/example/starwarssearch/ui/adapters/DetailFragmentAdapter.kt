@@ -14,14 +14,27 @@ import com.example.starwarssearch.ui.viewholders.FilmViewHolder
 import com.example.starwarssearch.ui.viewholders.HeaderViewHolder
 import com.example.starwarssearch.ui.viewholders.SpeciesViewHolder
 
-class DetailFragmentAdapter: ListAdapter<DetailAdapterItem, RecyclerView.ViewHolder>(DetailAdapterDiffUtil()){
-
+class DetailFragmentAdapter: ListAdapter<DetailAdapterItem, RecyclerView.ViewHolder>(DetailAdapterDiffUtil()) {
     private val detailList: MutableList<DetailAdapterItem> = mutableListOf()
 
+
     fun addItem(item: DetailAdapterItem) {
-        detailList.add(item)
+        val dataItem = detailList.find { it.id == item.id }
+        dataItem?.let {
+            updateItem(dataItem, item)
+        } ?: run {
+            detailList.add(item)
+            submitList(detailList)
+            notifyDataSetChanged() // Not sure how listAdapter will handle data change
+        }
+    }
+
+
+    private fun updateItem(oldItem: DetailAdapterItem, item: DetailAdapterItem){
+        val itemIndex = detailList.indexOf(oldItem)
+        detailList[itemIndex] = item
         submitList(detailList)
-        notifyDataSetChanged()
+        notifyItemChanged(itemIndex)
     }
 
 
@@ -37,15 +50,21 @@ class DetailFragmentAdapter: ListAdapter<DetailAdapterItem, RecyclerView.ViewHol
     }
 
 
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(holder) {
             is HeaderViewHolder -> holder.bindView(getItem(position) as DetailAdapterItem.HeaderItem)
             is CharacterDetailsViewHolder -> holder.bindView(getItem(position) as DetailAdapterItem.CharacterItem)
-            is SpeciesViewHolder -> holder.bindView(getItem(position) as DetailAdapterItem.SpeciesItem)
-            is FilmViewHolder -> holder.bindView(getItem(position) as DetailAdapterItem.FilmsItem)
+            is SpeciesViewHolder -> {
+                val item = getItem(position) as DetailAdapterItem.SpeciesItem
+                holder.bindView(item, item.state, item.errorMessage)
+            }
+            is FilmViewHolder -> {
+                val item = getItem(position) as DetailAdapterItem.FilmsItem
+                holder.bindView(item, item.state, item.errorMessage)
+            }
         }
     }
-
 
 
     override fun getItemViewType(position: Int): Int {

@@ -5,6 +5,7 @@ import com.example.starwarssearch.databinding.LayoutCharacterDetailBinding
 import com.example.starwarssearch.models.CharacterModel
 import com.example.starwarssearch.models.DetailAdapterItem
 
+
 class CharacterDetailsViewHolder(private val binding: LayoutCharacterDetailBinding) :
     BaseViewHolder<DetailAdapterItem.CharacterItem>(binding) {
 

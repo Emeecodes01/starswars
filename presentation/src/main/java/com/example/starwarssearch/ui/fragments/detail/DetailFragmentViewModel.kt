@@ -38,7 +38,18 @@ class DetailFragmentViewModel @Inject constructor(
         throwable.printStackTrace()
     }
 
-    private suspend fun getSpecies(speciesUrl: List<String>): List<SpeciesModel>{
+    private val speciesExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        throwable.printStackTrace()
+        _species.value = StarWarResource.Error(throwable.message)
+    }
+
+    private val filmExceptionHandler = CoroutineExceptionHandler {_, throwable ->
+        throwable.printStackTrace()
+        _species.value = StarWarResource.Error(throwable.message)
+    }
+
+
+    private suspend fun getSpecies(speciesUrl: List<String>): List<SpeciesModel> {
         _species.value = StarWarResource.Loading()
         val speciesResult = getSpeciesUseCase.invoke(speciesUrl)
         return speciesResult.map { speciesModelMapper.mapTo(it) }
@@ -57,16 +68,16 @@ class DetailFragmentViewModel @Inject constructor(
 
 
     fun getAllCharacterDetails(character: CharacterModel) {
+        _species.value = StarWarResource.Loading()
         viewModelScope.launch(detailsErrorHandler) {
-            val speciesDeffered = async { getSpecies(character.species) }
-            val filmsDeffered = async { getFilms(character.films) }
+            val speciesDeffered = async (speciesExceptionHandler) { getSpecies(character.species) }
+            val filmsDeffered = async (filmExceptionHandler) { getFilms(character.films) }
 
             val speciesResult = speciesDeffered.await()
             _species.value = StarWarResource.Success(speciesResult)
 
             val filmsResult = filmsDeffered.await()
             _films.value = StarWarResource.Success(filmsResult)
-
         }
     }
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.core.base.BaseFragment
+import com.example.core.states.ItemState
 import com.example.core.states.StarWarResource
 import com.example.core.utils.itemdecorators.DetailsVerticalListDecorator
 import com.example.core.utils.itemdecorators.VerticalListItemDecorator
@@ -21,7 +22,7 @@ import kotlinx.coroutines.flow.collect
 
 
 @AndroidEntryPoint
-class DetailFragment: BaseFragment<FragmentDetailLayoutBinding>() {
+class DetailFragment : BaseFragment<FragmentDetailLayoutBinding>() {
 
     private val detailsFragmentViewModel: DetailFragmentViewModel by viewModels()
     private val args: DetailFragmentArgs by navArgs()
@@ -39,39 +40,49 @@ class DetailFragment: BaseFragment<FragmentDetailLayoutBinding>() {
         with(detailsFragmentViewModel) {
             uiStateJob = lifecycleScope.launchWhenStarted {
                 species.collect { res ->
-                    when(res) {
-                        is StarWarResource.Loading -> {}
+                    when (res) {
+                        is StarWarResource.Loading -> {
+                            detailAdapter.addItem(DetailAdapterItem.HeaderItem(getString(R.string.species)))
+                            detailAdapter.addItem(DetailAdapterItem.SpeciesItem(emptyList(), ItemState.LOADING))
+                        }
                         is StarWarResource.Success -> {
                             res.data?.let {
                                 if (it.isNotEmpty()) {
-                                    detailAdapter.addItem(DetailAdapterItem.HeaderItem(getString(R.string.species)))
-                                    detailAdapter.addItem(DetailAdapterItem.SpeciesItem(it))
+                                    detailAdapter.addItem(DetailAdapterItem.SpeciesItem(it, ItemState.SUCCESS))
                                 }
                             }
                         }
-                        is StarWarResource.Error -> { }
+                        is StarWarResource.Error -> {
+                            detailAdapter.addItem (DetailAdapterItem.SpeciesItem(emptyList(), ItemState.ERROR, res.message))
+                        }
                     }
                 }
-
             }
+
 
             lifecycleScope.launchWhenStarted {
                 films.collect { res ->
-                    when(res) {
+                    when (res) {
                         is StarWarResource.Success -> {
                             res.data?.let {
                                 if (it.isNotEmpty()) {
-                                    detailAdapter.addItem(DetailAdapterItem.HeaderItem(getString(R.string.films)))
-                                    detailAdapter.addItem(DetailAdapterItem.FilmsItem(it))
+                                    detailAdapter.addItem(DetailAdapterItem.FilmsItem(it, ItemState.SUCCESS))
                                 }
                             }
                         }
+
                         is StarWarResource.Loading -> {
+                            detailAdapter.addItem(DetailAdapterItem.HeaderItem(getString(R.string.films)))
+                            detailAdapter.addItem(DetailAdapterItem.FilmsItem(emptyList(), ItemState.LOADING))
                         }
-                        is StarWarResource.Error -> { }
+
+                        is StarWarResource.Error -> {
+                            detailAdapter.addItem(DetailAdapterItem.FilmsItem(emptyList(), ItemState.ERROR, res.message))
+                        }
                     }
                 }
             }
+
         }
 
     }
@@ -86,7 +97,11 @@ class DetailFragment: BaseFragment<FragmentDetailLayoutBinding>() {
     private fun setUpRV() {
         with(binding.detailsRv) {
             layoutManager = LinearLayoutManager(requireContext())
-            addItemDecoration(DetailsVerticalListDecorator(resources.getDimension(R.dimen.compact_padding).toInt()))
+            addItemDecoration(
+                DetailsVerticalListDecorator(
+                    resources.getDimension(R.dimen.compact_padding).toInt()
+                )
+            )
             adapter = detailAdapter
         }
         detailAdapter.addItem(DetailAdapterItem.CharacterItem(character))
