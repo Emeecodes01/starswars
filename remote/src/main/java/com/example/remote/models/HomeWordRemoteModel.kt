@@ -1,6 +1,6 @@
 package com.example.remote.models
 
-data class HomeLandRemoteModel(
+data class HomeWordRemoteModel(
     val climate: String,
     val created: String,
     val diameter: String,

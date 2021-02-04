@@ -1,16 +1,14 @@
-package com.example.remote.mappers
+package com.example.starwarssearch.mappers
 
 import com.example.core.base.BaseMapper
 import com.example.domain.models.HomeWorld
-import com.example.remote.models.HomeWordRemoteModel
+import com.example.starwarssearch.models.HomeWorldModel
 import javax.inject.Inject
 
-class HomeLandRemoteModelMapper @Inject constructor() :
-    BaseMapper<HomeWordRemoteModel?, HomeWorld?> {
+class HomeWorldModelMapper @Inject constructor(): BaseMapper<HomeWorldModel?, HomeWorld?>{
 
-
-    override fun mapTo(to: HomeWorld?): HomeWordRemoteModel {
-        return HomeWordRemoteModel(
+    override fun mapTo(to: HomeWorld?): HomeWorldModel? {
+        return HomeWorldModel(
             climate = safeString(to?.climate),
             created = safeString(to?.created),
             diameter = safeString(to?.diameter),
@@ -28,7 +26,7 @@ class HomeLandRemoteModelMapper @Inject constructor() :
         )
     }
 
-    override fun mapFrom(from: HomeWordRemoteModel?): HomeWorld {
+    override fun mapFrom(from: HomeWorldModel?): HomeWorld? {
         return HomeWorld(
             climate = safeString(from?.climate),
             created = safeString(from?.created),
@@ -46,6 +44,4 @@ class HomeLandRemoteModelMapper @Inject constructor() :
             url = safeString(from?.url)
         )
     }
-
-
 }

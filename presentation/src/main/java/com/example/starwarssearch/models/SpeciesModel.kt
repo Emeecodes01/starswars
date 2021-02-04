@@ -1,5 +1,7 @@
 package com.example.starwarssearch.models
 
+import com.example.domain.models.HomeWorld
+
 data class SpeciesModel (
     val average_height: String,
     val average_lifespan: String,
@@ -15,5 +17,6 @@ data class SpeciesModel (
     val name: String,
     val people: List<String>,
     val skin_colors: String,
-    val url: String
+    val url: String,
+    val homeWorld: HomeWorldModel?
 )

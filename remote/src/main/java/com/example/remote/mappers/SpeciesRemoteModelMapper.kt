@@ -5,7 +5,9 @@ import com.example.domain.models.Species
 import com.example.remote.models.SpeciesRemoteModel
 import javax.inject.Inject
 
-class SpeciesRemoteModelMapper @Inject constructor(): BaseMapper<SpeciesRemoteModel, Species> {
+class SpeciesRemoteModelMapper @Inject constructor(
+    private val homeLandRemoteModelMapper: HomeLandRemoteModelMapper
+) : BaseMapper<SpeciesRemoteModel, Species> {
     override fun mapTo(to: Species): SpeciesRemoteModel {
         return SpeciesRemoteModel(
             average_height = to.average_height,
@@ -21,7 +23,8 @@ class SpeciesRemoteModelMapper @Inject constructor(): BaseMapper<SpeciesRemoteMo
             language = to.language,
             name = to.name,
             people = to.people,
-            skin_colors = to.skin_colors, url = to.url
+            skin_colors = to.skin_colors, url = to.url,
+            homeWorld = homeLandRemoteModelMapper.mapTo(to.homeWorld)
         )
     }
 
@@ -40,7 +43,8 @@ class SpeciesRemoteModelMapper @Inject constructor(): BaseMapper<SpeciesRemoteMo
             language = from.language,
             name = from.name,
             people = from.people,
-            skin_colors = from.skin_colors, url = from.url
+            skin_colors = from.skin_colors, url = from.url,
+            homeWorld = homeLandRemoteModelMapper.mapFrom(from.homeWorld)
         )
     }
 

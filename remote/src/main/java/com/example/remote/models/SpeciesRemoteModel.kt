@@ -15,5 +15,6 @@ data class SpeciesRemoteModel(
     val name: String,
     val people: List<String>,
     val skin_colors: String,
-    val url: String
+    val url: String,
+    var homeWorld: HomeWordRemoteModel? = null
 )

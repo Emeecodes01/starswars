@@ -2,7 +2,7 @@ package com.example.remote.services
 
 import com.example.remote.models.CharacterSearchResponse
 import com.example.remote.models.FilmRemoteModel
-import com.example.remote.models.HomeLandRemoteModel
+import com.example.remote.models.HomeWordRemoteModel
 import com.example.remote.models.SpeciesRemoteModel
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -20,6 +20,6 @@ interface StarWarsService {
     suspend fun fetchFilms(@Url filmUrl: String): FilmRemoteModel
 
     @GET
-    suspend fun fetchHomeLand(@Url homeLand: String): HomeLandRemoteModel
+    suspend fun fetchHomeWord(@Url homeWorld: String): HomeWordRemoteModel
 
 }

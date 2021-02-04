@@ -5,7 +5,9 @@ import com.example.domain.models.Species
 import com.example.starwarssearch.models.SpeciesModel
 import javax.inject.Inject
 
-class SpeciesModelMapper @Inject constructor(): BaseMapper<SpeciesModel, Species> {
+class SpeciesModelMapper  @Inject constructor(
+    private val homeWorldModelMapper: HomeWorldModelMapper
+): BaseMapper<SpeciesModel, Species> {
     override fun mapTo(to: Species): SpeciesModel {
         return SpeciesModel(
             average_height = to.average_height,
@@ -21,7 +23,8 @@ class SpeciesModelMapper @Inject constructor(): BaseMapper<SpeciesModel, Species
             language = to.language,
             name = to.name,
             people = to.people,
-            skin_colors = to.skin_colors, url = to.url
+            skin_colors = to.skin_colors, url = to.url,
+            homeWorld = homeWorldModelMapper.mapTo(to.homeWorld)
         )
     }
 
@@ -40,7 +43,8 @@ class SpeciesModelMapper @Inject constructor(): BaseMapper<SpeciesModel, Species
             language = from.language,
             name = from.name,
             people = from.people,
-            skin_colors = from.skin_colors, url = from.url
+            skin_colors = from.skin_colors, url = from.url,
+            homeWorld = homeWorldModelMapper.mapFrom(from.homeWorld)
         )
     }
 

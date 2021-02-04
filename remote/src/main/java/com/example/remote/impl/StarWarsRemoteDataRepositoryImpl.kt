@@ -3,7 +3,7 @@ package com.example.remote.impl
 import com.example.core.utils.extensions.toFlow
 import com.example.domain.models.Character
 import com.example.domain.models.Film
-import com.example.domain.models.HomeLand
+import com.example.domain.models.HomeWorld
 import com.example.domain.models.Species
 import com.example.domain.repository.StarWarsDataRepository
 import com.example.domain.utils.exceptions.IllegalModuleAccessException
@@ -32,14 +32,24 @@ class StarWarsRemoteDataRepositoryImpl @Inject constructor (
 
 
     override suspend fun getSpecies(speciesUrl: List<String>): List<Species> {
+        if (speciesUrl.isEmpty())
+            throw Exception("There are no species available")
+
         return speciesUrl.toFlow()
             .map { service.fetchSpecies(it) }
+            .onEach {
+                val result = service.fetchHomeWord(it.homeworld.toString())
+                it.homeWorld = result
+            }
             .toList() // accumulate the values
             .map { speciesRemoteModelMapper.mapFrom(it) }
     }
 
 
     override suspend fun getFilms(filmsUrl: List<String>): List<Film> {
+        if (filmsUrl.isEmpty())
+            throw Exception("There are no films available")
+
         return filmsUrl.toFlow()
             .map { service.fetchFilms(it) }
             .toList()
@@ -47,7 +57,7 @@ class StarWarsRemoteDataRepositoryImpl @Inject constructor (
 
     }
 
-    override suspend fun getHomeLand(homeLand: String): HomeLand {
+    override suspend fun getHomeLand(homeLand: String): HomeWorld {
         TODO("Not yet implemented")
     }
 

@@ -1,6 +1,6 @@
 package com.example.domain.models
 
-data class HomeLand(
+data class HomeWorld(
     val climate: String,
     val created: String,
     val diameter: String,
