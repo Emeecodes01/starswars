@@ -26,5 +26,17 @@ class VerticalListItemDecorator(private val spacing: Int) : RecyclerView.ItemDec
             }
         }
 
+        if (position > -1) {
+            val viewType = parent.adapter?.getItemViewType(position)
+            viewType?.let {
+                if (it == 2) {
+                    with(outRect) {
+                        left = 0
+                        right = 0
+                    }
+                }
+            }
+        }
+
     }
 }

@@ -22,4 +22,7 @@ interface StarWarsService {
     @GET
     suspend fun fetchHomeWord(@Url homeWorld: String): HomeWordRemoteModel
 
+    @GET
+    suspend fun loadMore(@Url nextUrl: String): CharacterSearchResponse
+
 }

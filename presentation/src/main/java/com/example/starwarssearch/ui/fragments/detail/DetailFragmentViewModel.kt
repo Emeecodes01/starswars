@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.core.states.StarWarResource
 import com.example.domain.interactors.GetFilmsUseCase
 import com.example.domain.interactors.GetSpeciesUseCase
+import com.example.domain.interactors.recent.SaveRecentCharacterUseCase
+import com.example.starwarssearch.mappers.CharacterModelMapper
 import com.example.starwarssearch.mappers.FilmModelMapper
 import com.example.starwarssearch.mappers.SpeciesModelMapper
 import com.example.starwarssearch.models.CharacterModel
@@ -20,8 +22,10 @@ import javax.inject.Inject
 class DetailFragmentViewModel @Inject constructor (
     private val getSpeciesUseCase: GetSpeciesUseCase,
     private val getFilmsUseCase: GetFilmsUseCase,
+    private val saveRecentCharacterUseCase: SaveRecentCharacterUseCase,
     private val speciesModelMapper: SpeciesModelMapper,
-    private val filmsModelMapper: FilmModelMapper
+    private val filmsModelMapper: FilmModelMapper,
+    private val characterModelMapper: CharacterModelMapper
 ) : ViewModel() {
 
     private val _species: MutableStateFlow<StarWarResource<List<SpeciesModel>>> =
@@ -51,11 +55,6 @@ class DetailFragmentViewModel @Inject constructor (
         return filmsResult.map { filmsModelMapper.mapTo(it) }
     }
 
-    private suspend fun getHomeLand(url: String) {
-
-    }
-
-
     fun getAllCharacterDetails(character: CharacterModel) {
         _species.value = StarWarResource.Loading()
         viewModelScope.launch(detailsErrorHandler) {
@@ -82,6 +81,12 @@ class DetailFragmentViewModel @Inject constructor (
                     }
             }
 
+        }
+    }
+
+    fun saveRecentMovie(character: CharacterModel) {
+        viewModelScope.launch {
+            saveRecentCharacterUseCase.invoke(characterModelMapper.mapFrom(character))
         }
     }
 

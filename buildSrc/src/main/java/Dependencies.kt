@@ -225,6 +225,7 @@ fun DependencyHandler.local() {
     add("implementation", Dependencies.Api.gson)
     add("kapt", Dependencies.Persistence.roomCompiler)
     add("implementation", project(":domain"))
+    add("implementation", project(":core"))
     add("implementation", Dependencies.Persistence.preferenceDataStore)
     dagger()
     unitTestDeps()

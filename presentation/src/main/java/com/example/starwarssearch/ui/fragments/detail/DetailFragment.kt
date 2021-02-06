@@ -91,6 +91,7 @@ class DetailFragment : BaseFragment<FragmentDetailLayoutBinding>() {
         super.onViewCreated(view, savedInstanceState)
         setUpRV()
         detailsFragmentViewModel.getAllCharacterDetails(character)
+        detailsFragmentViewModel.saveRecentMovie(character)
     }
 
 

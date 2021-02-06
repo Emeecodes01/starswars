@@ -6,6 +6,7 @@ import com.example.domain.models.Film
 import com.example.domain.models.HomeWorld
 import com.example.domain.models.Species
 import com.example.domain.repository.StarWarsDataRepository
+import com.example.domain.utils.LocalRepository
 import com.example.domain.utils.exceptions.IllegalModuleAccessException
 import com.example.remote.mappers.CharacterRemoteModelMapper
 import com.example.remote.mappers.FilmRemoteModelMapper
@@ -16,6 +17,7 @@ import javax.inject.Inject
 
 class StarWarsRemoteDataRepositoryImpl @Inject constructor (
     private val service: StarWarsService,
+    @LocalRepository private val localRepository: StarWarsDataRepository,
     private val mapper: CharacterRemoteModelMapper,
     private val speciesRemoteModelMapper: SpeciesRemoteModelMapper,
     private val filmRemoteModelMapper: FilmRemoteModelMapper
@@ -23,6 +25,7 @@ class StarWarsRemoteDataRepositoryImpl @Inject constructor (
 
     override suspend fun searchCharacter(name: String): List<Character> {
         val remoteCharacterList = service.search(name)
+        localRepository.next = remoteCharacterList.next
         return remoteCharacterList.characterRemoteModels.map { mapper.mapFrom(it) }
     }
 
@@ -57,8 +60,26 @@ class StarWarsRemoteDataRepositoryImpl @Inject constructor (
 
     }
 
-    override suspend fun getHomeLand(homeLand: String): HomeWorld {
-        TODO("Not yet implemented")
+    override suspend fun deleteCharacter(name: String) {
+        throw IllegalModuleAccessException()
     }
+
+
+    override suspend fun loadMoreCharacters(): List<Character> {
+        localRepository.next?.let { nextUrl ->
+            val remoteCharacterList = service.loadMore(nextUrl)
+            localRepository.next = remoteCharacterList.next
+            return remoteCharacterList.characterRemoteModels.map { mapper.mapFrom(it) }
+        } ?: run { throw  Exception("This is the end of the list")}
+    }
+
+    override fun getRecents(): Flow<List<Character>> {
+        throw IllegalModuleAccessException()
+    }
+
+
+    override var next: String?
+        get() = throw IllegalModuleAccessException()
+        set(value) {throw IllegalModuleAccessException()}
 
 }
