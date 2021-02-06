@@ -16,5 +16,11 @@ class FilmsHorizontalDecoration(private val spacing: Int): RecyclerView.ItemDeco
             left = spacing / 2
             right = spacing / 2
         }
+
+        if (parent.getChildAdapterPosition(view) == 0) {
+            with(outRect) {
+                left = spacing
+            }
+        }
     }
 }

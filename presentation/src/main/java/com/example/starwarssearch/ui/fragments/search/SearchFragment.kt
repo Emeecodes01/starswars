@@ -29,7 +29,8 @@ import reactivecircus.flowbinding.appcompat.queryTextChanges
 
 
 @AndroidEntryPoint
-class SearchFragment : BaseFragment<FragmentSearchBinding>(), SingleArg<CharacterModel>, CharactersAdapter.CharactersAdapterListener{
+class SearchFragment : BaseFragment<FragmentSearchBinding>(), SingleArg<CharacterModel>,
+    CharactersAdapter.CharactersAdapterListener {
 
     companion object {
         const val DEBOUNCE_TIME = 400L
@@ -70,14 +71,15 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), SingleArg<Characte
                             }
                         }
                         is StarWarResource.Loading -> {
-                            loadingState()
                             charactersAdapter.submitList(emptyList())
+                            loadingState()
                         }
 
                         is StarWarResource.Error -> {
                             errorState()
                             showError(it.message)
                         }
+                        else -> Unit
                     }
                 }
             }
@@ -104,6 +106,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), SingleArg<Characte
                         is StarWarResource.Error -> {
                             showToastMessage("There was an error loading more items")
                         }
+                        else -> Unit
                     }
                 }
             }
@@ -111,24 +114,19 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), SingleArg<Characte
 
 
         with(searchFragmentViewModel.recentCharacters) {
-            uiStateJob2 = lifecycleScope.launchWhenStarted {
-                collect {
+            lifecycleScope.launchWhenStarted { collect {
                     when (it) {
                         is StarWarResource.Success -> {
                             it.data?.let { recents ->
-                                if (recents.isNotEmpty())
-                                    charactersAdapter.submitList(
-                                        listOf(
-                                            SearchAdapterItem.RecentItem(
-                                                recents
-                                            )
-                                        )
-                                    )
+                                when {
+                                    recents.isEmpty() -> charactersAdapter.submitList(emptyList())
+                                    else -> {
+                                        charactersAdapter.submitList(listOf(SearchAdapterItem.RecentItem(recents)))
+                                    }
+                                }
                             }
                         }
-                        else -> {
-                            //don't care for now
-                        }
+                        else -> Unit
                     }
                 }
             }
@@ -162,7 +160,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), SingleArg<Characte
         val endlessRecyclerViewScrollListener =
             object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                    searchFragmentViewModel.loadMore()
+                    //searchFragmentViewModel.loadMore()
                 }
             }
 
@@ -219,7 +217,8 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), SingleArg<Characte
     }
 
     override fun onRecentItemClicked(characterModel: CharacterModel) {
-        val direction = SearchFragmentDirections.actionSearchFragmentToDetailFragment(characterModel)
+        val direction =
+            SearchFragmentDirections.actionSearchFragmentToDetailFragment(characterModel)
         navigateTo(direction)
     }
 

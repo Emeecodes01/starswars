@@ -29,18 +29,18 @@ class SearchFragmentViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _characters: MutableStateFlow<StarWarResource<List<CharacterModel>>> =
-        MutableStateFlow(StarWarResource.Success(emptyList()))
+        MutableStateFlow(StarWarResource.Empty())
 
     val characters: StateFlow<StarWarResource<List<CharacterModel>>> = _characters
 
     private val _moreCharacters: MutableStateFlow<StarWarResource<List<CharacterModel>>> =
-        MutableStateFlow(StarWarResource.Success(emptyList()))
+        MutableStateFlow(StarWarResource.Empty())
 
     val moreCharacters: StateFlow<StarWarResource<List<CharacterModel>>> = _moreCharacters
 
 
     private val _recentCharacters: MutableStateFlow<StarWarResource<List<CharacterModel>>> =
-        MutableStateFlow(StarWarResource.Success(emptyList()))
+        MutableStateFlow(StarWarResource.Empty())
     val recentCharacters: StateFlow<StarWarResource<List<CharacterModel>>> = _recentCharacters
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->

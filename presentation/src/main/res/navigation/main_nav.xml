@@ -15,8 +15,7 @@
             app:destination="@id/detailFragment"
             app:enterAnim="@android:anim/slide_in_left"
             app:exitAnim="@android:anim/slide_out_right"
-            app:launchSingleTop="true"
-            app:popUpTo="@id/searchFragment"
+            app:launchSingleTop="false"
             app:popUpToInclusive="false" />
     </fragment>
 

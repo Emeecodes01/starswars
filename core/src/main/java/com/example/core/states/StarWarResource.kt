@@ -7,4 +7,5 @@ sealed class StarWarResource<T>(
     class Success<T>(data: T) : StarWarResource<T>(data)
     class Loading<T>(data: T? = null) : StarWarResource<T>(data)
     class Error<T>(message: String?, data: T? = null) : StarWarResource<T>(data, message)
+    class Empty<T> : StarWarResource<T>()
 }
