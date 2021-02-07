@@ -13,6 +13,8 @@ import com.example.remote.mappers.FilmRemoteModelMapper
 import com.example.remote.mappers.SpeciesRemoteModelMapper
 import com.example.remote.services.StarWarsService
 import kotlinx.coroutines.flow.*
+import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class StarWarsRemoteDataRepositoryImpl @Inject constructor (
@@ -36,7 +38,7 @@ class StarWarsRemoteDataRepositoryImpl @Inject constructor (
 
     override suspend fun getSpecies(speciesUrl: List<String>): List<Species> {
         if (speciesUrl.isEmpty())
-            throw Exception("There are no species available")
+            throw IllegalArgumentException("There are no species available")
 
         return speciesUrl.toFlow()
             .map { service.fetchSpecies(it) }
@@ -51,13 +53,12 @@ class StarWarsRemoteDataRepositoryImpl @Inject constructor (
 
     override suspend fun getFilms(filmsUrl: List<String>): List<Film> {
         if (filmsUrl.isEmpty())
-            throw Exception("There are no films available")
+            throw IllegalArgumentException("There are no films available")
 
         return filmsUrl.toFlow()
             .map { service.fetchFilms(it) }
             .toList()
             .map { filmRemoteModelMapper.mapFrom(it) }
-
     }
 
     override suspend fun deleteCharacter(name: String) {
@@ -70,7 +71,7 @@ class StarWarsRemoteDataRepositoryImpl @Inject constructor (
             val remoteCharacterList = service.loadMore(nextUrl)
             localRepository.next = remoteCharacterList.next
             return remoteCharacterList.characterRemoteModels.map { mapper.mapFrom(it) }
-        } ?: run { throw  Exception("This is the end of the list")}
+        } ?: run { throw  IllegalStateException("This is the end of the list")}
     }
 
     override fun getRecents(): Flow<List<Character>> {

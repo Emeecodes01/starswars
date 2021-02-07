@@ -90,5 +90,4 @@ class DetailFragmentViewModel @Inject constructor (
         }
     }
 
-
 }

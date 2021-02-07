@@ -50,7 +50,15 @@ class SearchFragmentViewModel @Inject constructor(
 
     private val _loadMoreErrorHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace()
+        _moreCharacters.value = StarWarResource.Error(throwable.message)
     }
+
+    private val _recentCharactersErrorHandler = CoroutineExceptionHandler { _, throwable ->
+        throwable.printStackTrace()
+        _recentCharacters.value = StarWarResource.Error(throwable.message)
+    }
+
+
 
     fun searchCharacter(name: String) {
         _characters.value = StarWarResource.Loading()
@@ -71,12 +79,13 @@ class SearchFragmentViewModel @Inject constructor(
 
 
     fun getCharacterLocal() {
-        viewModelScope.launch {
+        viewModelScope.launch(_recentCharactersErrorHandler) {
             getRecentCharacterUseCase.execute().collect {
                 _recentCharacters.value = StarWarResource.Success(it.map { ch -> characterModelMapper.mapTo(ch) })
             }
         }
     }
+
 
     fun deleteCharacterLocal(name: String) {
         viewModelScope.launch {
