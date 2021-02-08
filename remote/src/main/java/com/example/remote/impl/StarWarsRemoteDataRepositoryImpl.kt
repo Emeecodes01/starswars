@@ -1,5 +1,6 @@
 package com.example.remote.impl
 
+import android.util.Log
 import com.example.core.utils.extensions.toFlow
 import com.example.domain.models.Character
 import com.example.domain.models.Film
@@ -17,7 +18,7 @@ import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import javax.inject.Inject
 
-class StarWarsRemoteDataRepositoryImpl @Inject constructor (
+class StarWarsRemoteDataRepositoryImpl @Inject constructor(
     private val service: StarWarsService,
     @LocalRepository private val localRepository: StarWarsDataRepository,
     private val mapper: CharacterRemoteModelMapper,
@@ -28,7 +29,7 @@ class StarWarsRemoteDataRepositoryImpl @Inject constructor (
     override suspend fun searchCharacter(name: String): List<Character> {
         val remoteCharacterList = service.search(name)
         localRepository.next = remoteCharacterList.next
-        return remoteCharacterList.characterRemoteModels.map { mapper.mapFrom(it) }
+        return remoteCharacterList.characterRemoteModels?.map { mapper.mapFrom(it) } ?: emptyList()
     }
 
     override suspend fun saveRecent(character: Character) {
@@ -43,8 +44,10 @@ class StarWarsRemoteDataRepositoryImpl @Inject constructor (
         return speciesUrl.toFlow()
             .map { service.fetchSpecies(it) }
             .onEach {
-                val result = service.fetchHomeWord(it.homeworld.toString())
-                it.homeWorld = result
+                it.homeworld?.let { homeWorldUrl ->
+                    val result = service.fetchHomeWord(homeWorldUrl)
+                    it.homeWorld = result
+                }
             }
             .toList() // accumulate the values
             .map { speciesRemoteModelMapper.mapFrom(it) }
@@ -70,8 +73,8 @@ class StarWarsRemoteDataRepositoryImpl @Inject constructor (
         localRepository.next?.let { nextUrl ->
             val remoteCharacterList = service.loadMore(nextUrl)
             localRepository.next = remoteCharacterList.next
-            return remoteCharacterList.characterRemoteModels.map { mapper.mapFrom(it) }
-        } ?: run { throw  IllegalStateException("This is the end of the list")}
+            return remoteCharacterList.characterRemoteModels?.map { mapper.mapFrom(it) } ?: emptyList()
+        } ?: run { throw  IllegalStateException("This is the end of the list") }
     }
 
     override fun getRecents(): Flow<List<Character>> {
@@ -81,6 +84,8 @@ class StarWarsRemoteDataRepositoryImpl @Inject constructor (
 
     override var next: String?
         get() = throw IllegalModuleAccessException()
-        set(value) {throw IllegalModuleAccessException()}
+        set(value) {
+            throw IllegalModuleAccessException()
+        }
 
 }

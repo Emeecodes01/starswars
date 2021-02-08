@@ -21,13 +21,13 @@ class CharacterRemoteModelMapper @Inject constructor(): BaseMapper<CharacterRemo
 
     override fun mapFrom(from: CharacterRemoteModel): Character {
         return Character(
-            from.birth_year,
-            from.created,
-            from.edited,
-            from.eye_color,
-            from.films, from.gender, from.hair_color, from.height,
-            from.homeworld, from.mass, from.name, from.skin_color, from.species,
-            from.starships, from.url, from.vehicles
+            safeString(from.birth_year),
+            safeString(from.created),
+            safeString(from.edited),
+            safeString(from.eye_color),
+            safeList(from.films), safeString(from.gender), safeString(from.hair_color), safeString(from.height),
+            safeString(from.homeworld), safeString(from.mass), safeString(from.name), safeString(from.skin_color), safeList(from.species),
+            safeList(from.starships), safeString(from.url), safeList(from.vehicles)
         )
     }
 }

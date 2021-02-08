@@ -30,20 +30,20 @@ class SpeciesRemoteModelMapper @Inject constructor(
 
     override fun mapFrom(from: SpeciesRemoteModel): Species {
         return Species(
-            average_height = from.average_height,
-            average_lifespan = from.average_lifespan,
-            classification = from.classification,
-            created = from.created,
-            designation = from.designation,
-            edited = from.edited,
-            eye_colors = from.eye_colors,
-            films = from.films,
-            hair_colors = from.hair_colors,
-            homeworld = from.homeworld,
-            language = from.language,
-            name = from.name,
-            people = from.people,
-            skin_colors = from.skin_colors, url = from.url,
+            average_height = safeString(from.average_height),
+            average_lifespan = safeString(from.average_lifespan),
+            classification = safeString(from.classification),
+            created = safeString(from.created),
+            designation = safeString(from.designation),
+            edited = safeString(from.edited),
+            eye_colors = safeString(from.eye_colors),
+            films = safeList(from.films),
+            hair_colors = safeString(from.hair_colors),
+            homeworld = safeString(from.homeworld),
+            language = safeString(from.language),
+            name = safeString(from.name),
+            people = safeList(from.people),
+            skin_colors = safeString(from.skin_colors), url = safeString(from.url),
             homeWorld = homeLandRemoteModelMapper.mapFrom(from.homeWorld)
         )
     }

@@ -28,20 +28,20 @@ class FilmRemoteModelMapper @Inject constructor(): BaseMapper<FilmRemoteModel, F
 
     override fun mapFrom(from: FilmRemoteModel): Film {
         return Film(
-            characters = from.characters,
-            created = from.created,
-            director = from.director,
-            edited = from.edited,
-            episode_id = from.episode_id,
-            opening_crawl = from.opening_crawl,
-            planets = from.planets,
-            producer = from.producer,
-            release_date = from.release_date,
-            species = from.species,
-            starships = from.starships,
-            title = from.title,
-            url = from.url,
-            vehicles = from.vehicles
+            characters = safeList(from.characters),
+            created = safeString(from.created),
+            director = safeString(from.director),
+            edited = safeString(from.edited),
+            episode_id = safeInt(from.episode_id),
+            opening_crawl = safeString(from.opening_crawl),
+            planets = safeList(from.planets),
+            producer = safeString(from.producer),
+            release_date = safeString(from.release_date),
+            species = safeList(from.species),
+            starships = safeList(from.starships),
+            title = safeString(from.title),
+            url = safeString(from.url),
+            vehicles = safeList(from.vehicles)
         )
     }
 

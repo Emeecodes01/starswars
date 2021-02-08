@@ -91,7 +91,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), SingleArg<Characte
                 collect {
                     when (it) {
                         is StarWarResource.Success -> {
-                            showToastMessage("New Items fetched")
                             it.data?.let { moreCharacters ->
                                 val newItems =
                                     moreCharacters.map { item -> SearchAdapterItem.SearchItem(item) }
@@ -100,12 +99,8 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), SingleArg<Characte
                             }
 
                         }
-                        is StarWarResource.Loading -> {
-                            showToastMessage("Loading pls wait...")
-                        }
-                        is StarWarResource.Error -> {
-                            showToastMessage("There was an error loading more items")
-                        }
+                        is StarWarResource.Loading -> { }
+                        is StarWarResource.Error -> { }
                         else -> Unit
                     }
                 }
@@ -160,7 +155,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(), SingleArg<Characte
         val endlessRecyclerViewScrollListener =
             object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                    //searchFragmentViewModel.loadMore()
+                    searchFragmentViewModel.loadMore()
                 }
             }
 
